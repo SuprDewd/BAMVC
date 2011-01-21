@@ -1,0 +1,1 @@
+<?php require 'Content/index.php';
