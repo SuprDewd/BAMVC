@@ -13,9 +13,9 @@ class Router
 		
 		if (__autoload($controller))
 		{
-			$dispatch = new $controller($model, $controllerName, $action);
+			$dispatch = new $controller(/*$model, $controllerName, $action*/);
 			
-			if (method_exists($controller, $action)/* && TODO: Action must be a public function! */)
+			if ($action[0] !== '_' && method_exists($controller, $action)/* && TODO: Action must be a public function! */)
 			{
 				if (method_exists($controller, 'BeforeAction')) call_user_func_array(array($dispatch, 'BeforeAction'), $urlArray);
 				call_user_func_array(array($dispatch, $action), $urlArray);

@@ -14,10 +14,17 @@ class View
 		return $this->Variables[$key];
 	}
 	
+	public function Clear()
+	{
+		$this->Variables = array();
+	}
+	
 	public function Render($view, $template = null)
 	{
 		$view = Views . $view . '.php';
-		$template = SharedViews . $view . '.php';
+		$template = $template == null ? null : SharedViews . $template . '.php';
+		
+		// TODO: Handle missing template or view.
 		
 		$this->Set('View', $view);
 		$this->Set('Template', $template);
@@ -25,9 +32,7 @@ class View
 		unset($view);
 		unset($template);
 		
-		export($this->Variables);
-		
-		// TODO: Handle missing template or view.
+		extract($this->Variables);
 		
 		include $this->Get('Template') !== null ? $this->Get('Template') : $this->Get('View');
 	}
