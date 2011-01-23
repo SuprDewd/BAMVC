@@ -34,7 +34,7 @@ class Config
 		
 		for ($i = 0; $i < $count; $i++)
 		{
-			if ($i + 1 == $count) return $last[$split[$i]];
+			if ($i + 1 === $count) return $last[$split[$i]];
 			$last = $last[$split[$i]];
 		}
 	}

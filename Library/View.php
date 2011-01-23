@@ -21,10 +21,10 @@ class View
 	
 	public function Render($view, $template = null)
 	{
-		$view = Views . $view . '.php';
-		$template = $template == null ? null : SharedViews . $template . '.php';
+		$view = Bootstrap::GetViewPath($view);
+		$template = $template === null ? null : Bootstrap::GetSharedViewPath($template);
 		
-		// TODO: Handle missing template or view.
+		if (!file_exists($view) || ($template !== null && !file_exists($template))) return false;
 		
 		$this->Set('View', $view);
 		$this->Set('Template', $template);
@@ -33,7 +33,25 @@ class View
 		unset($template);
 		
 		extract($this->Variables);
+		include ($t = $this->Get('Template')) !== null ? $t : $this->Get('View');
 		
-		include $this->Get('Template') !== null ? $this->Get('Template') : $this->Get('View');
+		return true;
+	}
+	
+	public static function RenderElement($element, $variables = array())
+	{
+		$element = Bootstrap::GetElementPath($element);
+		if ($element === null) return false;
+		
+		$this->Variables = $variables;
+		$this->Set('Element', $element);
+		
+		unset($element);
+		unset($variables);
+		
+		extract($this->Variables);
+		include $this->Get('Element');
+		
+		return true;
 	}
 }

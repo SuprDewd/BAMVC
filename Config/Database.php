@@ -2,8 +2,7 @@
 
 Config::Write('Database', array(
 	'Host'     => 'localhost',
-	'Schema'   => 'MainSchema',
-	'Username' => 'root',
-	'Password' => '',
-	'Prefix'   => ''
+	'Schema'   => 'Grunnur',
+	'Username' => 'WebAccount',
+	'Password' => 'DH^5Q9.*Wx'
 ));

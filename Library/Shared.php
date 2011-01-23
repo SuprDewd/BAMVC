@@ -1,6 +1,6 @@
 <?php
 
-function configureReporting()
+function ConfigureReporting()
 {
 	error_reporting(E_ALL);
 	
@@ -8,26 +8,26 @@ function configureReporting()
 	{
 		ini_set('display_errors','Off');
 		ini_set('log_errors', 'On');
-		ini_set('error_log', Root . DS . 'Temp' . DS . 'Logs' . DS . 'Error.log');
+		ini_set('error_log', Logs . 'Error.log');
 	}
 	else ini_set('display_errors','On');
 }
 
-function stripSlashesDeep($value)
+function StripSlashesDeep($value)
 {
-	return is_array($value) ? array_map('stripSlashesDeep', $value) : stripslashes($value);
+	return is_array($value) ? array_map(StripSlashesDeep, $value) : stripslashes($value);
 }
 
-function removeMagicQuotes()
+function RemoveMagicQuotes()
 {
 	if (!get_magic_quotes_gpc()) return;
 	
-	$_GET = stripSlashesDeep($_GET);
-	$_POST = stripSlashesDeep($_POST);
-	$_COOKIE = stripSlashesDeep($_COOKIE);
+	$_GET    = StripSlashesDeep($_GET);
+	$_POST   = StripSlashesDeep($_POST);
+	$_COOKIE = StripSlashesDeep($_COOKIE);
 }
 
-function unregisterGlobals()
+function UnregisterGlobals()
 {
     if (!ini_get('register_globals')) return;
     
@@ -39,14 +39,17 @@ function unregisterGlobals()
 
 function __autoload($className)
 {
-	if (file_exists($path = Root . DS . 'Library' . DS . $className . '.php')) require_once $path;
-	else if (file_exists($path = Root . DS . 'Controllers' . DS . $className . '.php')) require_once $path;
-	else if (file_exists($path = Root . DS . 'Models' . DS . $className . '.php')) require_once $path;
-	else return false; // TODO: Handle Error!
+	     if (file_exists($path = Controllers        . $className . '.php')) require_once $path;
+	else if (file_exists($path = Models             . $className . '.php')) require_once $path;
+	else if (file_exists($path = DefaultControllers . $className . '.php')) require_once $path;
+	else if (file_exists($path = Components         . $className . '.php')) require_once $path;
+	else if (file_exists($path = DefaultComponents  . $className . '.php')) require_once $path;
+	else if (file_exists($path = Library            . $className . '.php')) require_once $path;
+	else return false;
 	
 	return true;
 }
 
-configureReporting();
-removeMagicQuotes();
-unregisterGlobals();
+ConfigureReporting();
+RemoveMagicQuotes();
+UnregisterGlobals();
