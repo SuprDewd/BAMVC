@@ -36,4 +36,15 @@ class HomeController extends Controller
 	{
 		Router::Redirect('Home/Index');
 	}
+	
+	public function Cache()
+	{
+		if (($time = Cache::Get('TestCache')) === false)
+		{
+			$time = date('d m Y G:i:s');
+			Cache::Set('TestCache', $time, strtotime('+1 minute'));
+		}
+		
+		echo $time;
+	}
 }
