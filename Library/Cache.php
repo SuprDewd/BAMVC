@@ -9,7 +9,7 @@ class Cache
 	
 	public static function Get($key)
 	{
-		if (!file_exists(Cache . $key)) return false;
+		if (!file_exists(Cache . $key . '.cache')) return false;
 		$data = unserialize(file_get_contents(Cache . $key . '.cache'));
 		
 		if ($data['Expires'] === false || $data['Expires'] < time()) { self::Delete($key); return false; }
