@@ -1,0 +1,3 @@
+[submodule "Content/scaffold"]
+	path = Content/scaffold
+	url = https://github.com/anthonyshort/Scaffold.git

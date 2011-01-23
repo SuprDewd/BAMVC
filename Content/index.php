@@ -3,7 +3,7 @@
 define('NL', PHP_EOL);
 define('DS', DIRECTORY_SEPARATOR);
 define('WDS', '/');
-define('Root', dirname(dirname(__FILE__))   . DS);
+define('Root', dirname(dirname(__FILE__))  . DS);
 
 define('Models',      Root . 'Models'      . DS);
 define('Views',       Root . 'Views'       . DS);

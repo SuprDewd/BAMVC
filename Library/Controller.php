@@ -40,4 +40,19 @@ abstract class Controller
 		foreach (func_get_args() as $component) if (!$this->LoadComponent($component)) $all = false;
 		return $all;
 	}
+	
+	protected function SendContentType($contentType)
+	{
+		$this->SendHeader('Content-Type', $contentType);
+	}
+	
+	protected function SendLocation($location)
+	{
+		$this->SendHeader('Location', $location);
+	}
+	
+	protected function SendHeader($key, $value)
+	{
+		header($key . ': ' . $value);
+	}
 }

@@ -1,5 +1,11 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
+	
+	RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_URI} \.css$
+    RewriteCond %{QUERY_STRING} parse
+    RewriteRule ^(.+)$ scaffold/parse.php?file=%{REQUEST_URI}&%{QUERY_STRING} [L]
+	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^(.*)$ index.php?Request=$1 [PT,L]
