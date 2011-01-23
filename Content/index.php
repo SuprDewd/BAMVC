@@ -15,6 +15,7 @@ define('Config',      Root . 'Config'      . DS);
 
 define('Components',  Controllers . 'Components' . DS);
 
+define('Helpers',     Views . 'Helpers'  . DS);
 define('Elements',    Views . 'Elements' . DS);
 define('SharedViews', Views . 'Shared'   . DS);
 
@@ -25,6 +26,7 @@ define('DefaultViews',       Library . 'Views'       . DS);
 define('DefaultControllers', Library . 'Controllers' . DS);
 define('DefaultConfig',      Library . 'Config'      . DS);
 
+define('DefaultHelpers',     DefaultViews . 'Helpers'  . DS);
 define('DefaultElements',    DefaultViews . 'Elements' . DS);
 define('DefaultSharedViews', DefaultViews . 'Shared'   . DS);
 
