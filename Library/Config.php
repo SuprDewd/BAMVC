@@ -7,7 +7,7 @@ class Config
 	
 	public static function Write($path, $value = null)
 	{
-		if ($path === '') self::$Config = $value;
+		if ($path === '') { self::$Config = $value; return; }
 		
 		$split = explode('.', $path);
 		$last = &self::$Config;

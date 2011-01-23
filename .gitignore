@@ -1,2 +1,8 @@
 /.settings/
 /.project
+
+/Temp/Cache/
+!/Temp/Cache/Empty
+
+/Temp/Logs/
+!/Temp/Logs/Empty

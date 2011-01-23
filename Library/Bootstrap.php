@@ -1,12 +1,19 @@
 <?php
 
 require_once Library . 'Config.php';
+require_once Library . 'Cache.php';
 
-require_once DefaultConfig  . 'Main.php';
+if (($config = Cache::Get('Config')) === false)
+{
+	require_once DefaultConfig  . 'Main.php';
 
-require_once Config  . 'Main.php';
-require_once Config  . 'Database.php';
-require_once Config  . 'Routing.php';
+	require_once Config  . 'Main.php';
+	require_once Config  . 'Database.php';
+	require_once Config  . 'Routing.php';
+	
+	Cache::Set('Config', Config::Read(), strtotime('+1 week'));
+}
+else Config::Write('', $config);
 
 require_once Library . 'Shared.php';
 require_once Library . 'Router.php';
