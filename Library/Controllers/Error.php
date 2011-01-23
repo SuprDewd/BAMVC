@@ -7,6 +7,7 @@ class ErrorController extends Controller
 		parent::__construct();
 		
 		$this->View->Set('Title', 'Error');
+		$this->View->LoadHelper('Html');
 	}
 	
 	public function NotFound()
