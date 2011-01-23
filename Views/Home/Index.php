@@ -1,3 +1,4 @@
+<?=$Html->Css('scaffoldTest.css', true)?>
 <h2>Test</h2>
 
 <ol>

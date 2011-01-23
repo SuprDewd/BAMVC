@@ -38,8 +38,8 @@ class Scaffold_Extension_CSSTidy extends Scaffold_Extension
 			'discard_invalid_properties'	=> false,
 			'css_level'						=> '2.1',
 			'timestamp'						=> false,
-		)
-		'template' => 'low_compression',
+		),
+		'template' => 'low_compression'
 	);
 
 	/**
