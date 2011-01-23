@@ -34,11 +34,12 @@ class View
 		
 		extract($this->Variables);
 		include ($t = $this->Get('Template')) !== null ? $t : $this->Get('View');
+		$this->Clear();
 		
 		return true;
 	}
 	
-	public static function RenderElement($element, $variables = array())
+	private function RenderElementPrivate($element, $variables = array())
 	{
 		$element = Bootstrap::GetElementPath($element);
 		if ($element === null) return false;
@@ -51,7 +52,30 @@ class View
 		
 		extract($this->Variables);
 		include $this->Get('Element');
+		$this->Clear();
 		
 		return true;
+	}
+	
+	public static function RenderElement($element, $variables = array())
+	{
+		$view = new View();
+		return $view->RenderElementPrivate($element, $variables);
+	}
+	
+	public function LoadHelper($helper)
+	{
+		$helperName = $helper . 'Helper';
+		if (!Bootstrap::LoadHelper($helper)) return false;
+		$this->Set($helper, new $helperName($this));
+		
+		return true;
+	}
+	
+	public function LoadHelpers()
+	{
+		$all = true;
+		foreach (func_get_args() as $helper) if (!self::LoadHelper($helper)) $all = false;
+		return $all;
 	}
 }

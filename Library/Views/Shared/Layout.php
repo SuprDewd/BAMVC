@@ -3,8 +3,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<title><?=isset($Title) ? $Title : ''?></title>
+		<?=$Http->Css('styles.css')?>
 	</head>
 	<body>
-		<? require($View) ?>
+		<?require $View?>
 	</body>
 </html>

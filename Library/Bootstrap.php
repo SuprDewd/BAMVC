@@ -39,6 +39,11 @@ class Bootstrap
 		return self::Load($component, Components, DefaultComponents);
 	}
 	
+	public static function LoadHelper($helper)
+	{
+		return self::Load($helper, Helpers, DefaultHelpers);
+	}
+	
 	public static function GetViewPath($view)
 	{
 		return self::GetPath($view, Views, DefaultViews);

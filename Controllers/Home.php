@@ -7,6 +7,7 @@ class HomeController extends Controller
 		parent::__construct();
 		
 		$this->View->Set('Title', 'Home');
+		$this->View->LoadHelper('Http');
 	}
 	
 	public function Index()
@@ -42,9 +43,14 @@ class HomeController extends Controller
 		if (($time = Cache::Get('TestCache')) === false)
 		{
 			$time = date('d m Y G:i:s');
-			Cache::Set('TestCache', $time, strtotime('+1 minute'));
+			Cache::Set('TestCache', $time, strtotime('+10 minute'));
 		}
 		
 		echo $time;
+	}
+	
+	public function ElementHelp()
+	{
+		$this->View->Render('Home/ElementHelp', 'Layout');
 	}
 }
