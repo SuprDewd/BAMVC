@@ -7,7 +7,7 @@ class HomeController extends Controller
 		parent::__construct();
 		
 		$this->View->Set('Title', 'Home');
-		$this->View->LoadHelper('Http');
+		$this->View->LoadHelper('Html');
 	}
 	
 	public function Index()

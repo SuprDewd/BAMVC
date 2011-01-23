@@ -1,6 +1,6 @@
 <?php
 
-class HttpHelper
+class HtmlHelper
 {
 	public function Link($content, $href, $attrs = array())
 	{
@@ -13,9 +13,9 @@ class HttpHelper
 		return '<a' . $this->FormatAttributes($attrs) . '>' . $title . '</a>';
 	}
 	
-	public function Css($file, $attrs = array())
+	public function Css($file, $parse = false, $attrs = array())
 	{
-		$attrs['href'] = $this->Content('css/' . $file);
+		$attrs['href'] = $this->Content('css/' . $file) . ($parse ? '?parse' : '');
 		$attrs['rel'] = 'stylesheet';
 		return $this->Element('link', null, $attrs);
 	}
