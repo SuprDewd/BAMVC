@@ -3,6 +3,12 @@
 abstract class Model
 {
 	public $Connection = null;
+	public $TableName = null;
+	
+	public function __construct($tableName = null)
+	{
+		$this->TableName = $tableName;
+	}
 	
 	public function Open()
 	{
@@ -71,6 +77,18 @@ abstract class Model
 			return !$singleRow ? $table : (count($table) != 0 ? $table[0] : false);
 		}
 		else return $this->Connection->affected_rows;
+	}
+	
+	public function FindAll()
+	{
+		return $this->Query('SELECT * FROM ' . $this->TableName);
+	}
+	
+	public function FindByID($id, $idColumn = 'ID')
+	{
+		$stmt = $this->Open()->prepare('SELECT * FROM ' . $this->TableName . ' WHERE ' . $idColumn . ' = ?');
+		$stmt->bind_param('d', $id);
+		return $this->QueryPrepared($stmt, true, true);
 	}
 	
 	private function stmt_bind_assoc(&$stmt, &$out)

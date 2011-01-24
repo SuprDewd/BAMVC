@@ -3,55 +3,61 @@
 abstract class Controller
 {
 	public $View;
+	public $LoadedModels = array();
+	public $LoadedComponents = array();
 	
 	public function __construct()
 	{
 		$this->View = new View();
 	}
 	
-	protected function LoadModel($model)
+	public function LoadModel($model)
 	{
+		if (in_array($model, $this->LoadedModels)) return $this->$model;
+		
 		$modelName = $model . 'Model';
 		if (!Bootstrap::LoadModel($model)) return false;
-		$this->$model = new $modelName();
+		$this->LoadedModels[] = $model;
 		
-		return true;
+		return $this->$model = new $modelName();
 	}
 	
-	protected function LoadModels()
+	public function LoadModels()
 	{
 		$all = true;
-		foreach (func_get_args() as $model) if (!$this->LoadModel($model)) $all = false;
+		foreach (func_get_args() as $model) if ($this->LoadModel($model) === false) $all = false;
 		return $all;
 	}
 	
-	protected function LoadComponent($component)
+	public function LoadComponent($component)
 	{
+		if (in_array($component, $this->LoadedComponents)) return $this->$component;
+		
 		$componentName = $component . 'Component';
 		if (!Bootstrap::LoadComponent($component)) return false;
-		$this->$component = new $componentName($this);
+		$this->LoadedComponents[] = $component;
 		
-		return true;
+		return $this->$component = new $componentName($this);
 	}
 	
-	protected function LoadComponents()
+	public function LoadComponents()
 	{
 		$all = true;
-		foreach (func_get_args() as $component) if (!$this->LoadComponent($component)) $all = false;
+		foreach (func_get_args() as $component) if ($this->LoadComponent($component) === false) $all = false;
 		return $all;
 	}
 	
-	protected function SendContentType($contentType)
+	public function SendContentType($contentType)
 	{
 		$this->SendHeader('Content-Type', $contentType);
 	}
 	
-	protected function SendLocation($location)
+	public function SendLocation($location)
 	{
 		$this->SendHeader('Location', $location);
 	}
 	
-	protected function SendHeader($key, $value)
+	public function SendHeader($key, $value)
 	{
 		header($key . ': ' . $value);
 	}

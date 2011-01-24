@@ -14,4 +14,9 @@ class ErrorController extends Controller
 	{
 		return $this->View->Render('Error/NotFound', 'Layout');
 	}
+	
+	public function NotAuthorized()
+	{
+		return $this->View->Render('Error/NotAuthorized', 'Layout');
+	}
 }

@@ -5,7 +5,7 @@ class Router
 	public static function Initialize($url = Request, $isFallback = false)
 	{
 		$urlArray = explode(WDS, self::ApplyCustomRoutes(rtrim($url, WDS)));
-	
+		
 		$controllerFile = (count($urlArray) > 0 && $urlArray[0] !== '' ? $urlArray[0] : Config::Read('Router.Default.Controller'));
 		$controller = $controllerFile . 'Controller';
 		array_shift($urlArray);
@@ -15,7 +15,8 @@ class Router
 		if (!Bootstrap::LoadController($controllerFile)) { self::Error($isFallback); return; }
 		
 		$dispatch = new $controller();
-		if (!($action[0] !== '_' && $action !== 'BeforeAction' && $action !== 'AfterAction' && method_exists($controller, $action))) { self::Error($isFallback); return; }
+		$forbiddenActions = array('BeforeAction', 'AfterAction', 'LoadComponent', 'LoadComponents', 'LoadModel', 'LoadModels', 'SendContentType', 'SendLocation', 'SendHeader');
+		if (!($action[0] !== '_' && !in_array($action, $forbiddenActions) && method_exists($controller, $action))) { self::Error($isFallback); return; }
 
 		$dispatchAction = new ReflectionMethod($dispatch, $action);
 		if (!$dispatchAction->isPublic() || $dispatchAction->isStatic() || count($urlArray) < $dispatchAction->getNumberOfRequiredParameters()) { self::Error($isFallback); return; }
@@ -43,7 +44,10 @@ class Router
 	{
 		foreach (Config::Read('Router.CustomRoutes') as $pattern => $replacement)
 		{
-			if (preg_match($pattern, $url)) return preg_replace($pattern, $replacement, $url);
+			if (preg_match($pattern, $url))
+			{
+				return preg_replace($pattern, $replacement, $url);
+			}
 		}
 		
 		return $url;

@@ -1,0 +1,1 @@
+<h3 class="error">You are not authorized to view the specified page</h3>

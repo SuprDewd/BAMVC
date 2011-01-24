@@ -8,6 +8,9 @@ class HomeController extends Controller
 		
 		$this->View->Set('Title', 'Home');
 		$this->View->LoadHelper('Html');
+		$this->LoadModel('User');
+		$this->LoadComponent('Auth');
+		$this->Auth->UserModel = $this->User;
 	}
 	
 	public function Index()

@@ -2,6 +2,16 @@
 
 class HtmlHelper
 {
+	public function Escape($string)
+	{
+		return htmlspecialchars($string);
+	}
+	
+	public function UrlEscape($string)
+	{
+		return urlencode($string);
+	}
+	
 	public function Link($content, $href, $attrs = array())
 	{
 		return $this->RawLink($content, WebRoot . $href, $attrs);
@@ -10,7 +20,7 @@ class HtmlHelper
 	public function RawLink($content, $href, $attrs = array())
 	{
 		$attrs['href'] = $href;
-		return '<a' . $this->FormatAttributes($attrs) . '>' . $title . '</a>';
+		return '<a' . $this->FormatAttributes($attrs) . '>' . $content . '</a>';
 	}
 	
 	public function Css($file, $parse = false, $attrs = array())
@@ -35,6 +45,37 @@ class HtmlHelper
 	{
 		return WebRoot . $file;
 	}
+
+	public function CreateForm($action = '', $method = 'post', $attrs = array())
+	{
+		$attrs['action'] = WebRoot . $action;
+		$attrs['method'] = $method;
+		return '<form' . $this->FormatAttributes($attrs) . '>';
+	}
+	
+	public function Label($label, $for = null, $attrs = array())
+	{
+		$attrs['for'] = $for;
+		return $this->Element('label', $label, $attrs);
+	}
+	
+	public function Submit($title, $attrs = array())
+	{
+		$attrs['value'] = $title;
+		$attrs['type'] = 'submit';
+		return $this->Element('input', null, $attrs);
+	}
+	
+	public function Input($type = 'text', $content = null, $attrs = array())
+	{
+		$attrs['type'] = $type;		
+		return $this->Element('input', $content, $attrs);
+	}
+	
+	public function EndForm()
+	{
+		return '</form>';
+	}
 	
 	private function FormatAttributes($attrs)
 	{
@@ -43,7 +84,7 @@ class HtmlHelper
 		$s = '';
 		$first = true;
 		
-		foreach ($attrs as $attr => $value) $s .= ' ' . $attr . '="' . $value . '"';
+		foreach ($attrs as $attr => $value) if ($value !== null) $s .= ' ' . $attr . '="' . $value . '"';
 		return $s === '' ? ' ' : $s;
 	}
 }
