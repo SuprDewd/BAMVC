@@ -16,7 +16,7 @@ class AuthComponent
 	
 	public function Login($username = null, $password = null)
 	{
-		if ($this->UserModel === null || !($this->UserModel instanceof AbstractUserModel)) return false;
+		if ($this->UserModel === null || !($this->UserModel instanceof IUserModel)) return false;
 		
 		if ($username !== null && $password !== null)
 		{

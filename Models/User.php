@@ -1,6 +1,6 @@
 <?php
 
-class UserModel extends AbstractUserModel
+class UserModel extends Model implements IUserModel
 {
 	public function __construct()
 	{
