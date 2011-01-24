@@ -1,6 +1,6 @@
 <?php
 
-class AnimalModel extends Model
+class AnimalModel extends MyModel
 {
 	public function __construct()
 	{

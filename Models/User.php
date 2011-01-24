@@ -1,6 +1,6 @@
 <?php
 
-class UserModel extends Model implements IUserModel
+class UserModel extends MyModel implements IUserModel
 {
 	public function __construct()
 	{
