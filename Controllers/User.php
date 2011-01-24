@@ -6,9 +6,9 @@ class UserController extends Controller
 	{
 		parent::__construct();
 		
-		$this->LoadComponent('Auth');
+		$this->LoadComponents('Auth', 'Recaptcha');
 		$this->Auth->UserModel = $this->LoadModel('User');
-		$this->View->LoadHelper('Html');
+		$this->View->LoadHelpers('Html', 'Recaptcha');
 		$this->Auth->Roles = Config::Read('Auth.Roles');
 		$this->Auth->Allow('Add', 'Admin');
 		$this->Auth->Allow('Role', array('User', 'Admin'));
@@ -29,7 +29,7 @@ class UserController extends Controller
 		if (isset($_POST['Username']) &&
 			isset($_POST['Password']) &&
 			isset($_POST['PasswordAgain']) &&
-			($errors = $this->User->IsValid(trim($_POST['Username']), $_POST['Password'], $_POST['PasswordAgain'])) === true)
+			($errors = $this->User->IsValid(trim($_POST['Username']), $_POST['Password'], $_POST['PasswordAgain'], $this->Recaptcha->CheckAnswer($_SERVER['REMOTE_ADDR'])->IsValid)) === true)
 		{
 			if (!$this->User->Create(trim($_POST['Username']), $this->Auth->HashPassword($_POST['Password']))) Router::Redirect('User', 'Register', isset($_POST['Username']) ? urlencode($_POST['Username']) : '', 'Error');
 			else

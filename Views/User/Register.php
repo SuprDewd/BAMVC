@@ -18,5 +18,7 @@
 	<?=$Html->Input('password', null, array('name' => 'Password'))?><br />
 	<?=$Html->Label('Password Again:', 'PasswordAgain')?>
 	<?=$Html->Input('password', null, array('name' => 'PasswordAgain'))?>
+	<?=$Recaptcha->WithTheme('clean')?>
+	<?=$Recaptcha->GetHtml()?>
 	<?=$Html->Submit('Register')?>
 <?=$Html->EndForm()?>

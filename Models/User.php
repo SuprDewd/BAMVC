@@ -7,9 +7,9 @@ class UserModel extends MyModel implements IUserModel
 		parent::__construct('Users');
 	}
 	
-	public function GetUserByName($username)
+	public function GetUserByName($username, $columns = array('*'))
 	{
-		$stmt = $this->Open()->prepare('SELECT * FROM Users WHERE Username = ?');
+		$stmt = $this->Open()->prepare('SELECT ' . implode(', ', $columns) . ' FROM Users WHERE Username = ?');
 		$stmt->bind_param('s', $username);
 		return $this->QueryPrepared($stmt, true, true);
 	}
@@ -29,7 +29,7 @@ class UserModel extends MyModel implements IUserModel
 		return $this->QueryPrepared($stmt) === 1;
 	}
 	
-	public function IsValid($username, $password, $passwordAgain, $role = 'User')
+	public function IsValid($username, $password, $passwordAgain, $captcha, $role = 'User')
 	{
 		$errors = array();
 
@@ -45,8 +45,8 @@ class UserModel extends MyModel implements IUserModel
 		if (!$this->LengthIsNotMoreThan($password, 20)) $errors[] = 'Password can not be longer than 20 characters';
 		if ($password !== $passwordAgain) $errors[] = 'Passwords do not match';
 		if (!in_array($role, Config::Read('Auth.Roles'))) $errors[] = 'Not a valid role';
+		if (!$captcha) $errors[] = 'Captcha answer not correct';
 		
-
 		return count($errors) === 0 ? true : $errors;
 	}
 }
