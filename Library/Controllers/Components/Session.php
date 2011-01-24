@@ -43,6 +43,11 @@ class SessionComponent
 		return array_key_exists($key, $_SESSION);
 	}
 	
+	public function FlashExists($key)
+	{
+		return $this->KeyExists('Flash.' . $key);
+	}
+	
 	public function SetFlash($key, $value)
 	{
 		$this->Set('Flash.' . $key, $value);

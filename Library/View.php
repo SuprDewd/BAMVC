@@ -2,7 +2,13 @@
 
 class View
 {
-	private $Variables = array();
+	protected $Variables = array();
+	protected $Controller;
+	
+	public function __construct($controller)
+	{
+		$this->Controller = $controller;
+	}
 	
 	public function Set($key, $value)
 	{
@@ -28,6 +34,7 @@ class View
 		
 		$this->Set('View', $view);
 		$this->Set('Template', $template);
+		$this->Set('Controller', $this->Controller);
 		
 		unset($view);
 		unset($template);
@@ -67,7 +74,7 @@ class View
 	{
 		$helperName = $helper . 'Helper';
 		if (!Bootstrap::LoadHelper($helper)) return false;
-		$this->Set($helper, new $helperName($this));
+		$this->Set($helper, new $helperName($this, $this->Controller));
 		
 		return true;
 	}

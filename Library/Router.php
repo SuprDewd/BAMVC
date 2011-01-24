@@ -14,18 +14,23 @@ class Router
 		
 		if (!Bootstrap::LoadController($controllerFile)) { self::Error($isFallback); return; }
 		
-		$dispatch = new $controller();
 		$forbiddenActions = array('BeforeAction', 'AfterAction', 'LoadComponent', 'LoadComponents', 'LoadModel', 'LoadModels', 'SendContentType', 'SendLocation', 'SendHeader');
 		if (!($action[0] !== '_' && !in_array($action, $forbiddenActions) && method_exists($controller, $action))) { self::Error($isFallback); return; }
 
-		$dispatchAction = new ReflectionMethod($dispatch, $action);
+		$dispatchAction = new ReflectionMethod($controller, $action);
 		if (!$dispatchAction->isPublic() || $dispatchAction->isStatic() || count($urlArray) < $dispatchAction->getNumberOfRequiredParameters()) { self::Error($isFallback); return; }
 
+		$dispatch = new $controller($action, $urlArray);
+		$dispatch->ControllerName = $controllerFile;
 		if (method_exists($controller, 'BeforeAction')) call_user_func_array(array($dispatch, 'BeforeAction'), $urlArray);
 		$ok = $dispatchAction->invokeArgs($dispatch, $urlArray);
 		if (method_exists($controller, 'AfterAction')) call_user_func_array(array($dispatch, 'AfterAction'), $urlArray);
 		
-		if ($ok === false) self::Error($isFallback);
+		if (isset($ok))
+		{
+			if ($ok === false) self::Error($isFallback);
+			else if (is_string($ok)) Router::Redirect();
+		}
 	}
 
 	private static function Error($isFallback)

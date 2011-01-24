@@ -25,25 +25,30 @@ class AuthComponent
 			
 			if ($userRow !== null && $userRow['Password'] === $password)
 			{
-				$this->Session->Set('UserLogin', $userRow);
+				$this->Session->Set('Auth.Login', $userRow);
 				return true;
 			}
 			else return false;
 		}
 		else
 		{
-			if (!$this->Session->KeyExists('UserLogin')) return false;
+			if (!$this->Session->KeyExists('Auth.Login')) return false;
 			
-			$userLogin = $this->Session->Get('UserLogin');
+			$userLogin = $this->Session->Get('Auth.Login');
 			$userRow = $this->UserModel->GetUserByName($userLogin['Username']);
 			
-			if ($userRow !== null && $userRow['Password'] === $userLogin['Password']) { $this->Session->Set('UserLogin', $userRow); return true; }
+			if ($userRow !== null && $userRow['Password'] === $userLogin['Password']) { $this->Session->Set('Auth.Login', $userRow); return true; }
 			else
 			{
 				$this->Logout();
 				return false;
 			}
 		}
+	}
+	
+	public function LoginPost()
+	{
+		return $this->Login(isset($_POST['Username']) ? $_POST['Username'] : null, isset($_POST['Password']) ? $_POST['Password'] : null);
 	}
 	
 	public function Allow($action, $roles = '*')
@@ -94,13 +99,13 @@ class AuthComponent
 	public function Role($user = null, $password = null)
 	{
 		if (!$this->Login($user, $password)) return null;
-		$userRow = $this->Session->Get('UserLogin');
+		$userRow = $this->Session->Get('Auth.Login');
 		return $userRow['Role'];
 	}
 	
 	public function IsAllowed($action, $user = null, $password = null)
 	{
-		if (!in_array($action, $this->Allows)) return false;
+		if (!array_key_exists($action, $this->Allows)) return false;
 		if ($this->Allows[$action] === '*') return true;
 		$role = $this->Role($user, $password);
 		if ($role === null) return false;
@@ -108,14 +113,23 @@ class AuthComponent
 		return in_array($role, $this->Allows[$action]);
 	}
 	
-	public function RequireAllowed($action, $user = null, $password = null)
+	public function RequireAllowed($action, $user = null, $password = null, $goto = 'Error/NotAuthorized', $setReturnFlash = true)
 	{
-		if (!$this->IsAllowed($action, $user, $password)) Router::Redirect('Error', 'NotAuthorized');
+		if (!$this->IsAllowed($action, $user, $password))
+		{
+			if ($setReturnFlash)
+			{
+				if (isset($this->Controller->ControllerName)) $this->Session->SetFlash('Login.ReturnTo', $this->Controller->ControllerName . '/' . $action);
+				else Debug::LogWarning('Controller->ControllerName is not set.');
+			}
+			
+			Router::Redirect($goto);
+		}
 	}
 	
 	public function Logout()
 	{
-		$this->Session->Delete('UserLogin');
+		$this->Session->Delete('Auth.Login');
 	}
 	
 	public function HashPassword($password, $algo = 'sha1')

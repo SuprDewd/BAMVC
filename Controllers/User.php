@@ -14,12 +14,12 @@ class UserController extends Controller
 		$this->Auth->Allow('Role', array('User', 'Admin'));
 	}
 	
-	public function Register($username = '', $error = false)
+	public function Register()
 	{
 		if ($this->Auth->Login()) Router::Redirect('');
-		$this->View->Set('Username', $username);
-		$this->View->Set('GeneralError', $error !== false);
-		$this->View->Set('Errors', $this->Session->GetFlash('RegisterErrors'));
+		$this->View->Set('Username', $this->Session->GetFlash('Register.Username'));
+		$this->View->Set('GeneralError', $this->Session->GetFlash('Register.Error') === true);
+		$this->View->Set('Errors', $this->Session->GetFlash('Register.Errors'));
 		return $this->View->Render('User/Register', 'Layout');
 	}
 	
@@ -40,23 +40,30 @@ class UserController extends Controller
 		}
 		else
 		{
-			$this->Session->SetFlash('RegisterErrors', $errors);
-			Router::Redirect('User', 'Register', isset($_POST['Username']) ? urlencode(str_replace('/', '', $_POST['Username'])) : '', 'Error');
+			$this->Session->SetFlash('Register.Errors', $errors);
+			$this->Session->SetFlash('Register.Username', $_POST['Username']);
+			$this->Session->SetFlash('Register.Error', true);
+			Router::Redirect('User', 'Register');
 		}
 	}
 	
-	public function Login($username = '', $error = false)
+	public function Login()
 	{
 		if ($this->Auth->Login()) Router::Redirect('');
-		$this->View->Set('Username', $username);
-		$this->View->Set('Error', $error !== false);
+		$this->View->Set('Username', $this->Session->GetFlash('Login.Username'));
+		$this->View->Set('Error', $this->Session->GetFlash('Login.Error') === true);
 		return $this->View->Render('User/Login', 'Layout');
 	}
 	
 	public function LoginSubmit()
 	{
-		if ($this->Auth->Login(isset($_POST['Username']) ? $_POST['Username'] : null, isset($_POST['Password']) ? $_POST['Password'] : null)) Router::Redirect('');
-		else Router::Redirect('User', 'Login', isset($_POST['Username']) ? urlencode($_POST['Username']) : '', 'Error');
+		if ($this->Auth->LoginPost()) Router::Redirect($this->Session->FlashExists('Login.ReturnTo') ? $this->Session->GetFlash('Login.ReturnTo') : '');
+		else
+		{
+			$this->Session->SetFlash('Login.Username', $_POST['Username']);
+			$this->Session->SetFlash('Login.Error', true);
+			Router::Redirect('User', 'Login');
+		}
 	}
 	
 	public function Logout()
@@ -67,6 +74,7 @@ class UserController extends Controller
 
 	public function Role()
 	{
+		$this->Auth->RequireAllowed('Role', null, null, 'Login');
 		var_dump($this->Auth->Role());
 	}
 }

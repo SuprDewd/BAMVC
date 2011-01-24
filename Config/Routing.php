@@ -2,7 +2,7 @@
 
 Config::Write('Router.CustomRoutes', array(
 	'/^Animals(\/.*)?$/' => 'Home$1',
-	'/^Login$/' => 'User/Login',
-	'/^Logout$/' => 'User/Logout',
-	'/^Register$/' => 'User/Register'
+	'/^Login$/i' => 'User/Login',
+	'/^Logout$/i' => 'User/Logout',
+	'/^Register$/i' => 'User/Register'
 ));

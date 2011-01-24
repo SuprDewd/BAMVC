@@ -5,10 +5,11 @@ abstract class Controller
 	public $View;
 	public $LoadedModels = array();
 	public $LoadedComponents = array();
+	public $ControllerName;
 	
 	public function __construct()
 	{
-		$this->View = new View();
+		$this->View = new View($this);
 	}
 	
 	public function LoadModel($model)
