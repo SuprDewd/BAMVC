@@ -8,3 +8,5 @@ Config::Write('Router.Default', array(
 ));
 
 Config::Write('TryCompressOutput', true);
+
+Config::Write('Debug.Log', Logs . 'Error.log');

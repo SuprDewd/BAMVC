@@ -1,14 +1,16 @@
 <h2>Register</h2>
 
 <?=$Html->CreateForm('User/RegisterSubmit')?>
-	<? if ($Error): ?>
-		<h4 class="error">One of the following errors occured:</h4>
-		<ul>
-			<li>Passwords did not match</li>
-			<li>Password is less than 6 characters or more than 15 characters</li>
-			<li>Username is taken</li>
-			<li>Invalid username</li>
-		</ul>
+	<? if ($GeneralError): ?>
+		<? if (count($Errors) === 0): ?>
+			<h4 class="error">An error occured. Please try again later.</h4>
+		<? else: ?>
+			<ul>
+				<? foreach ($Errors as $Error): ?>
+					<li class="error"><?=$Error?></li>
+				<? endforeach; ?>
+			</ul>
+		<? endif; ?>
 	<? endif; ?>
 	<?=$Html->Label('Username:', 'Username')?>
 	<?=$Html->Input('text', null, array('name' => 'Username', 'value' => $Html->Escape($Username)))?><br />

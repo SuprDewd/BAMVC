@@ -8,7 +8,7 @@ function ConfigureReporting()
 	{
 		ini_set('display_errors','Off');
 		ini_set('log_errors', 'On');
-		ini_set('error_log', Logs . 'Error.log');
+		ini_set('error_log', Config::Read('Debug.Log'));
 	}
 	else ini_set('display_errors','On');
 }

@@ -6,6 +6,7 @@ class AuthComponent
 	public $Controller;
 	public $Session;
 	public $Allows = array();
+	public $Roles = null;
 	
 	public function __construct($controller)
 	{
@@ -47,16 +48,46 @@ class AuthComponent
 	
 	public function Allow($action, $roles = '*')
 	{
-		if ($roles === '*') $this->Allows[$action] = $roles;
+		if ($roles === '*') $this->Allows[$action] = $this->Roles != null ? $this->Roles : $roles;
 		if (is_string($roles)) $roles = array($roles);
 		
 		if (!array_key_exists($action, $this->Allows))
 		{
-			if (is_array($roles)) $this->Allows[$action] = $roles;
+			if (is_array($roles))
+			{
+				if (in_array('*', $roles)) $this->Allows[$action] = $this->Roles != null ? $this->Roles : '*';
+				else $this->Allows[$action] = $roles;
+			}
 		}
 		else if (is_array($this->Allows[$action]))
 		{
-			if (is_array($roles)) foreach ($roles as $role) if (!in_array($role, $this->Allows[$action])) $this->Allows[$action][] = $role;
+			if (in_array('*', $roles)) $this->Allows[$action] = $this->Roles != null ? $this->Roles : '*';
+			else if (is_array($roles)) foreach ($roles as $role) if (!in_array($role, $this->Allows[$action])) $this->Allows[$action][] = $role;
+		}
+	}
+	
+	public function AllowLoggedIn($action)
+	{
+		if ($this->Roles === null) { Debug::LogWarning('Auth->Roles is not set.'); return; }
+		$this->Allows[$action] = $this->Roles;
+	}
+
+	public function Deny($action, $roles = '*')
+	{
+		if ($roles === '*') $this->Allows = array();
+		if (is_string($roles)) $roles = array($roles);
+		
+		if (array_key_exists($action, $this->Allows))
+		{
+			if (is_string($this->Allows[$action]))
+			{
+				if ($this->Roles !== null)
+				{
+					foreach ($this->Roles as $role) if (!in_array($role, $roles)) $this->Allows[$action][] = $role;
+				}
+				else Debug::LogWarning('Auth->Roles is not set.');
+			}
+			else $this->Allows[$action] = array_filter($this->Allows[$action], function ($role) use ($roles) { return !in_array($role, $roles); });
 		}
 	}
 	

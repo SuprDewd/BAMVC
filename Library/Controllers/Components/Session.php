@@ -42,4 +42,31 @@ class SessionComponent
 		$this->Start();
 		return array_key_exists($key, $_SESSION);
 	}
+	
+	public function SetFlash($key, $value)
+	{
+		$this->Set('Flash.' . $key, $value);
+	}
+	
+	public function GetFlash($key)
+	{
+		$key = 'Flash.' . $key;
+		if ($this->KeyExists($key))
+		{
+			$value = $this->Get($key);
+			$this->Delete($key);
+			return $value;
+		}
+		else return null;
+	}
+	
+	public function DeleteFlash($key)
+	{
+		$this->Delete('Flash.' . $key);
+	}
+	
+	public function ClearFlash()
+	{
+		foreach ($_SESSION as $key => $value) if (strpos('Flash.', $key) === 0) $this->Delete($key);
+	}
 }

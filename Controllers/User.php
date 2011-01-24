@@ -9,6 +9,7 @@ class UserController extends Controller
 		$this->LoadComponent('Auth');
 		$this->Auth->UserModel = $this->LoadModel('User');
 		$this->View->LoadHelper('Html');
+		$this->Auth->Roles = Config::Read('Auth.Roles');
 		$this->Auth->Allow('Add', 'Admin');
 		$this->Auth->Allow('Role', array('User', 'Admin'));
 	}
@@ -17,7 +18,8 @@ class UserController extends Controller
 	{
 		if ($this->Auth->Login()) Router::Redirect('');
 		$this->View->Set('Username', $username);
-		$this->View->Set('Error', $error !== false);
+		$this->View->Set('GeneralError', $error !== false);
+		$this->View->Set('Errors', $this->Session->GetFlash('RegisterErrors'));
 		return $this->View->Render('User/Register', 'Layout');
 	}
 	
@@ -27,13 +29,20 @@ class UserController extends Controller
 		if (isset($_POST['Username']) &&
 			isset($_POST['Password']) &&
 			isset($_POST['PasswordAgain']) &&
-			$_POST['Password'] === $_POST['PasswordAgain'] &&
-			$this->User->Create($_POST['Username'], $this->Auth->HashPassword($_POST['Password'])))
+			($errors = $this->User->IsValid(trim($_POST['Username']), $_POST['Password'], $_POST['PasswordAgain'])) === true)
 		{
-			$this->Auth->Login($_POST['Username'], $_POST['Password']);
-			return $this->View->Render('User/RegisterSubmit', 'Layout');
+			if (!$this->User->Create(trim($_POST['Username']), $this->Auth->HashPassword($_POST['Password']))) Router::Redirect('User', 'Register', isset($_POST['Username']) ? urlencode($_POST['Username']) : '', 'Error');
+			else
+			{
+				$this->Auth->Login($_POST['Username'], $_POST['Password']);
+				return $this->View->Render('User/RegisterSubmit', 'Layout');
+			}
 		}
-		else Router::Redirect('User', 'Register', isset($_POST['Username']) ? urlencode($_POST['Username']) : '', 'Error');
+		else
+		{
+			$this->Session->SetFlash('RegisterErrors', $errors);
+			Router::Redirect('User', 'Register', isset($_POST['Username']) ? urlencode(str_replace('/', '', $_POST['Username'])) : '', 'Error');
+		}
 	}
 	
 	public function Login($username = '', $error = false)
