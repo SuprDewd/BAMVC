@@ -2,19 +2,19 @@
 
 class Debug
 {
-	public $Log = '';
+	public static $Log = '';
 	
 	public static function Dump($file)
 	{
-		if (Config::Read('ProductionEnvironment') && $this->Log !== '')
+		if (is_string(Config::Read('Error.Log')) && self::$Log !== '')
 		{
-			file_put_contents($file, $this->Log, FILE_APPEND);
+			file_put_contents($file, self::$Log, FILE_APPEND);
 		}
 	}
 	
 	public static function Log($message)
 	{
-		if (Config::Read('ProductionEnvironment')) $Log .= Date('YY/MM/DD H:i:s') . ' ' . $message . NL;
+		self::$Log .= Date('Y/m/d H:i:s') . ' ' . $message . NL;
 	}
 	
 	public static function LogIf($bool, $message)

@@ -40,4 +40,4 @@ define('WebRoot', rtrim(substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SEL
 if (Config::Read('TryCompressOutput')) ob_start('ob_gzhandler');
 
 Router::Initialize();
-Debug::Dump(Config::Read('Debug.Log'));
+if (is_string(Config::Read('Error.Log'))) Debug::Dump(Config::Read('Error.Log'));

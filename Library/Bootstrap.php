@@ -15,12 +15,12 @@ if (($config = Cache::Get('Config')) === false)
 }
 else Config::Write('', $config);
 
+require_once Library . 'Debug.php';
 require_once Library . 'Shared.php';
 require_once Library . 'Router.php';
 require_once Library . 'Model.php';
 require_once Library . 'View.php';
 require_once Library . 'Controller.php';
-// require_once Library . 'AbstractUserModel.php';
 
 
 class Bootstrap
