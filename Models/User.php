@@ -38,11 +38,12 @@ class UserModel extends MyModel implements IUserModel
 		if (!isset($password)) $errors[] = 'Please specify a password again';
 		if (count($errors) > 0) return $errors;
 
-		if (!$this->LengthBetween($username, 3, 12)) $errors[] = 'Username must contain 3 to 12 letters';
-		if (!$this->MatchesRegex($username, '/^[a-zA-Z0-9\-_\. ]+$/')) $errors[] = 'Username must only contain letters, digits, hyphens, underscores and dots';
-		if (count($errors) === 0 && $this->CountUsersWithName($username)) $errors[] = 'Username is already taken';
-		if (!$this->LengthIsAtLeast($password, 5)) $errors[] = 'Password needs to be at least 5 characters';
-		if (!$this->LengthIsNotMoreThan($password, 20)) $errors[] = 'Password can not be longer than 20 characters';
+		if (!$this->LengthIsAtLeast($username, 3)) $errors[] = 'Username needs to contain at least 3 characters';
+		if (!$this->LengthIsNotMoreThan($username, 12)) $errors[] = 'Username can not contain more than 12 characters';
+		if (!$this->MatchesRegex($username, '/^[a-zA-Z0-9\-_\. ]*$/')) $errors[] = 'Username must only contain letters, digits, hyphens, underscores and dots';
+		if (count($errors) === 0 && $this->CountUsersWithName($username) > 0) $errors[] = 'Username is already taken';
+		if (!$this->LengthIsAtLeast($password, 5)) $errors[] = 'Password needs to contain at least 5 characters';
+		if (!$this->LengthIsNotMoreThan($password, 20)) $errors[] = 'Password can not contain more than 20 characters';
 		if ($password !== $passwordAgain) $errors[] = 'Passwords do not match';
 		if (!in_array($role, Config::Read('Auth.Roles'))) $errors[] = 'Not a valid role';
 		if (!$captcha) $errors[] = 'Captcha answer not correct';
