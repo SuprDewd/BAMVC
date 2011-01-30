@@ -58,4 +58,9 @@ abstract class Model
 	{
 		return is_numeric($input);
 	}
+	
+	protected function IsEmail($input)
+	{
+		return filter_var($input, FILTER_VALIDATE_EMAIL) !== false;
+	}
 }
