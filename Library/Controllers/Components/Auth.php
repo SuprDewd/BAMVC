@@ -33,10 +33,12 @@ class AuthComponent
 			$username = $userLogin['Username'];
 			$password = $userLogin['Password'];
 		}
+		else $password = $this->HashPassword($password);
+
 		
 		$userRow = $this->UserModel->GetUserByName($username);
 		if ($userRow === null) return $this->BadLogin();
-		if ($userRow['Password'] !== $this->HashPassword($password)) return $this->BadLogin();
+		if ($userRow['Password'] !== $password) return $this->BadLogin();
 		
 		$this->Session->Set('Auth.Login', $userRow);
 		return true;
