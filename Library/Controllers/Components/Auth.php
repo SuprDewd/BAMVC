@@ -28,7 +28,11 @@ class AuthComponent
 				$this->Session->Set('Auth.Login', $userRow);
 				return true;
 			}
-			else return false;
+			else
+			{
+				sleep(Config.Read('Security.BadLoginSleepLength'));
+				return false;
+			}
 		}
 		else
 		{
@@ -41,6 +45,7 @@ class AuthComponent
 			else
 			{
 				$this->Logout();
+				sleep(Config.Read('Security.BadLoginSleepLength'));
 				return false;
 			}
 		}
@@ -132,9 +137,15 @@ class AuthComponent
 		$this->Session->Delete('Auth.Login');
 	}
 	
-	public function HashPassword($password, $algo = 'sha1', $salt = null)
+	public function HashPassword($password, $salt = null, $iters = null, $algo = null)
 	{
 		if (!isset($salt)) $salt = Config::Read('Security.Salt');
-		return hash($algo, $salt . $password);
+		if (!isset($iters)) $iters = Config::Read('Security.HashIterations');
+		if (!isset($algo)) $algo = Config::Read('Security.HashAlgorithm');
+		
+		$hash = $salt . $password;
+		for ($i = 0; $i < $iters; $i++) $hash = hash($algo, $hash);
+		
+		return $hash;
 	}
 }
