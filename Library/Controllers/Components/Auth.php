@@ -132,8 +132,9 @@ class AuthComponent
 		$this->Session->Delete('Auth.Login');
 	}
 	
-	public function HashPassword($password, $algo = 'sha1')
+	public function HashPassword($password, $algo = 'sha1', $salt = null)
 	{
-		return hash($algo, $password);
+		if (!isset($salt)) $salt = Config::Read('Security.Salt');
+		return hash($algo, $salt . $password);
 	}
 }

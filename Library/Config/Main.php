@@ -10,3 +10,5 @@ Config::Write('Router.Default', array(
 Config::Write('TryCompressOutput', true);
 
 Config::Write('Error.Log', Logs . 'Error.log');
+
+Config::Write('Security.Salt', 'f#@V(su^!!%dwF6($)=Ö/');
