@@ -14,41 +14,32 @@ class AuthComponent
 		$this->Session = $this->Controller->LoadComponent('Session');
 	}
 	
+	private function BadLogin()
+	{
+		$this->Logout();
+		sleep(Config::Read('Security.BadLoginSleepLength'));
+		return false;
+	}
+	
 	public function Login($username = null, $password = null)
 	{
 		if ($this->UserModel === null || !($this->UserModel instanceof IUserModel)) return false;
 		
-		if ($username !== null && $password !== null)
-		{
-			$password = $this->HashPassword($password);
-			$userRow = $this->UserModel->GetUserByName($username);
-			
-			if ($userRow !== null && $userRow['Password'] === $password)
-			{
-				$this->Session->Set('Auth.Login', $userRow);
-				return true;
-			}
-			else
-			{
-				sleep(Config.Read('Security.BadLoginSleepLength'));
-				return false;
-			}
-		}
-		else
+		if ($username === null || $password === null)
 		{
 			if (!$this->Session->KeyExists('Auth.Login')) return false;
 			
 			$userLogin = $this->Session->Get('Auth.Login');
-			$userRow = $this->UserModel->GetUserByName($userLogin['Username']);
-			
-			if ($userRow !== null && $userRow['Password'] === $userLogin['Password']) { $this->Session->Set('Auth.Login', $userRow); return true; }
-			else
-			{
-				$this->Logout();
-				sleep(Config.Read('Security.BadLoginSleepLength'));
-				return false;
-			}
+			$username = $userLogin['Username'];
+			$password = $userLogin['Password'];
 		}
+		
+		$userRow = $this->UserModel->GetUserByName($username);
+		if ($userRow === null) return $this->BadLogin();
+		if ($userRow['Password'] !== $this->HashPassword($password)) return $this->BadLogin();
+		
+		$this->Session->Set('Auth.Login', $userRow);
+		return true;
 	}
 	
 	public function LoginPost()
