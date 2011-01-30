@@ -23,9 +23,9 @@ class AuthComponent
 	
 	public function Login($username = null, $password = null)
 	{
-		if ($this->UserModel === null || !($this->UserModel instanceof IUserModel)) return false;
+		if (!isset($this->UserModel) || !($this->UserModel instanceof IUserModel)) return false;
 		
-		if ($username === null || $password === null)
+		if (!isset($username) || !isset($password))
 		{
 			if (!$this->Session->KeyExists('Auth.Login')) return false;
 			
