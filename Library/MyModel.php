@@ -59,18 +59,16 @@ abstract class MyModel extends Model
 		{
 			$table = array();
 			$row = array();
-			$this->stmt_bind_assoc($stmt, $row);
 			
+			$this->stmt_bind_assoc($stmt, $row);
 			while ($stmt->fetch())
 			{
 				$table[] = $row;
-				
 				if ($singleRow) break;
+				$this->stmt_bind_assoc($stmt, $row);
 			}
 			
 			$stmt->free_result();
-			
-			
 			return !$singleRow ? $table : (count($table) != 0 ? $table[0] : false);
 		}
 		else return $this->Connection->affected_rows;

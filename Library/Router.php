@@ -2,8 +2,9 @@
 
 class Router
 {
-	public static function Initialize($url = Request, $isFallback = false)
+	public static function Initialize($url = Request, $isFallback = false, $depth = 0)
 	{
+		if (($maxDepth = Config::Read('Router.MaxDepth')) !== 0 && $depth > $maxDepth) { self::Error($isFallback); return; }
 		$urlArray = explode(WDS, self::ApplyCustomRoutes(rtrim($url, WDS)));
 		
 		$controllerFile = (count($urlArray) > 0 && $urlArray[0] !== '' ? $urlArray[0] : Config::Read('Router.Default.Controller'));
@@ -29,7 +30,7 @@ class Router
 		if (isset($ok))
 		{
 			if ($ok === false) self::Error($isFallback);
-			else if (is_string($ok)) Router::Redirect();
+			else if (is_string($ok)) self::Initialize($ok, false, $depth + 1);
 		}
 	}
 
