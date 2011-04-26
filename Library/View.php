@@ -66,7 +66,7 @@ class View
 	
 	public static function RenderElement($element, $variables = array())
 	{
-		$view = new View();
+		$view = new View(null);
 		return $view->RenderElementPrivate($element, $variables);
 	}
 	
